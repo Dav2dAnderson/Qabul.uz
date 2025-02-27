@@ -5,6 +5,7 @@ __pycache__/
 
 # Virtual environment
 ../venv/
+../myvenv/
 
 # Django secrets
 .env
