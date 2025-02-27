@@ -15,7 +15,7 @@ from pathlib import Path
 from datetime import timedelta
 
 import os
-import dj_database_url
+# import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'payments',
     'accounts',
     'applications',
+    "audit",
+
 ]
 
 
@@ -67,6 +69,26 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',  # Token shifrlash algoritmi
     'SIGNING_KEY': SECRET_KEY,  # Tokenlarni imzolash uchun maxfiy kalit
     'AUTH_HEADER_TYPES': ('Bearer',),  # Token yuborishda ishlatiladigan header turi
+}
+
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'audit.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
 }
 
 
@@ -104,24 +126,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'qabul_db',
-#         'USER': 'postgres',
-#         'PASSWORD': 'yourpassword',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
-
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:ZQpjoXPwQKFyNEvlsdQiIJwxZbhgWzQY@turntable.proxy.rlwy.net:50318/railway'
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'test_db',
+        'USER': 'test_user',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
+
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgresql://postgres:ZQpjoXPwQKFyNEvlsdQiIJwxZbhgWzQY@turntable.proxy.rlwy.net:50318/railway'
+#     )
+# }
 
 
 # Password validation

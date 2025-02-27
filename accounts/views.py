@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, exceptions, status
 # from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
-
-
+from audit.signals import get_client_ip
+from audit.models import AuditLog
 from .models import CustomUser, Branch, City
 from .serializers import CustomUserSerializer, CustomUserRetrieveSerializer, BranchSerializer, CitySerializer
 # Create your views here.
@@ -18,11 +18,18 @@ class UserRegistrationView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        user = serializer.save()  # Foydalanuvchi yaratildi
+
+        ip_address = get_client_ip(request)
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        if ip_address:
+            user.temp_ip = ip_address
+            user.temp_user = user_agent
+            AuditLog.objects.create(user=user, action="User registered", ip_address=ip_address, user_agent=user_agent)
 
         return Response(
             {'message': "Foydalanuvchi muvaffaqiyatli ro'yxatdan o'tdi.", "user": serializer.data},
-            status = status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED
         )
 
 

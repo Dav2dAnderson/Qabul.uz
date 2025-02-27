@@ -52,6 +52,8 @@ class CustomUser(AbstractUser):
     is_paid = models.BooleanField(default=False)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=GOVERNMENT_OFFICER)
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
+    temp_ip = None
+    temp_agent = None
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'city', 'birth_date']
